@@ -1,19 +1,11 @@
 <?php
 
-namespace App\Infrastructure\Controller;
+namespace App\Controller;
 
-use App\Application\Command\CreateOrderHandler;
-use App\Domain\Command\CreateOrder;
-use App\Domain\Exception\InvalidDrinksAmount;
-use App\Domain\Exception\InvalidFoodType;
-use App\Domain\Exception\InvalidMoneyForDelivery;
-use App\Domain\Exception\NotEnoughMoney;
-use http\Env\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/orders")
@@ -75,36 +67,6 @@ class OrderController extends AbstractController
 
                 return $this->json('Your order '.$drinksIncludedString.'has been registered.');
             }
-        }
-    }
-
-    /**
-     * @Route("/create-order", methods={"POST"}, name="create_order")
-     * @param Request $request
-     * @return Response
-     */
-    public function createOrder(Request $request, SerializerInterface $serializer, CreateOrderHandler $handler)
-    {
-        try {
-            $command = $serializer->deserialize($request->getContent(), CreateOrder::class, 'json');
-
-            $order = $handler->handle($command);
-
-            if ($order->hasDrinks()) {
-                return new Response('Your order with drinks included has been registered.');
-            }
-
-            return new Response('Your order has been registered.');
-
-        } catch (InvalidFoodType $exception) {
-            return new Response('Selected food must be pizza, burger or sushi.');
-
-        }catch (InvalidDrinksAmount $exception) {
-            return new Response('Number of drinks should be between 0 and 2.');
-        }catch (NotEnoughMoney $exception) {
-            return new Response('Money does not reach the order amount.');
-        }catch (InvalidMoneyForDelivery $exception) {
-            return new Response('Money must be the exact order amount on delivery orders.');
         }
     }
 }
