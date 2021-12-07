@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exception;
 
-class InvalidFoodType
+class InvalidFoodType extends \Exception
 {
 
 }

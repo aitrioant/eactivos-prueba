@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exception;
 
-class InvalidMoneyForDelivery
+class InvalidMoneyForDelivery extends \Exception
 {
 
 }
